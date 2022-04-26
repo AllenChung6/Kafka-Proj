@@ -24,17 +24,13 @@ class XactionConsumer:
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="",
+        password="Theztudent91!",
         database="kafka"
     )
 
     mycursor = mydb.cursor()
-    mycursor.execute("""CREATE TABLE IF NOT EXISTS transaction (
-                     custid INT NOT NULL,
-                     type VARCHAR(255),
-                     date INT,
-                     amt INT)
-                     """)
+    mycursor.execute("CREATE TABLE IF NOT EXISTS transaction (custid INT NOT NULL AUTO_INCREMENT, \
+                      type VARCHAR(255), date INT, amt INT)")
 
     def handleMessages(self):
         for message in self.consumer:
@@ -50,7 +46,10 @@ class XactionConsumer:
                 self.custBalances[message['custid']] -= message['amt']
             print(self.custBalances)
 
-        messaage_dict = {message:custid, message:}
+            all_messages = (message['custid'], message['type'], message['date'], message['amt'])
+            sql_insert = "INSERT INTO transaction (custid, type, date, amt) VALUES (%s,%s,%s,%s)"
+            self.mycursor.execute(sql_insert, all_messages)
+            self.mydb.commit()
 
 if __name__ == "__main__":
     c = XactionConsumer()
