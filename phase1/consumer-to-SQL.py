@@ -1,12 +1,23 @@
 from kafka import KafkaConsumer, TopicPartition
 from json import loads
+import mysql.connector
+
+transaction = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="Theztudent91!"
+)
+
+mycursor = transaction.cursor()
+mycursor.execute("Create DATABASE transaction")
+
 
 class XactionConsumer:
     def __init__(self):
         self.consumer = KafkaConsumer('bank-customer-events',
-            bootstrap_servers=['localhost:9092'],
-            # auto_offset_reset='earliest',
-            value_deserializer=lambda m: loads(m.decode('ascii')))
+                                      bootstrap_servers=['localhost:9092'],
+                                      # auto_offset_reset='earliest',
+                                      value_deserializer=lambda m: loads(m.decode('ascii')))
         ## These are two python dictionarys
         # Ledger is the one where all the transaction get posted
         self.ledger = {}
@@ -17,7 +28,17 @@ class XactionConsumer:
         # data gets lost!
         # add a way to connect to your database here.
 
-        #Go back to the readme.
+        # Go back to the readme.
+
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="kafka"
+    )
+
+    mycursor = mydb.cursor()
+    mycursor.execute("Create TABLE IF NOT EXISTS (transaction(custid INT, type VARCHAR(255), date INT, amt INT)")
 
     def handleMessages(self):
         for message in self.consumer:
@@ -32,6 +53,7 @@ class XactionConsumer:
             else:
                 self.custBalances[message['custid']] -= message['amt']
             print(self.custBalances)
+
 
 if __name__ == "__main__":
     c = XactionConsumer()
