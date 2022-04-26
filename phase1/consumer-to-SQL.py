@@ -29,7 +29,7 @@ class XactionConsumer:
     )
 
     mycursor = mydb.cursor()
-    mycursor.execute("CREATE TABLE IF NOT EXISTS transaction (custid INT NOT NULL AUTO_INCREMENT, \
+    mycursor.execute("CREATE TABLE IF NOT EXISTS transaction (custid INT NOT NULL, \
                       type VARCHAR(255), date INT, amt INT)")
 
     def handleMessages(self):
