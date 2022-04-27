@@ -24,7 +24,7 @@ class XactionConsumer:
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="Theztudent91!",
+        password="",
         database="kafka"
     )
 
