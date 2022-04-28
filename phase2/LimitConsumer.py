@@ -2,7 +2,6 @@ from kafka import KafkaConsumer, TopicPartition
 from json import loads
 
 
-
 class XactionConsumer:
     def __init__(self):
         self.consumer = KafkaConsumer('bank-customer-events',
@@ -22,7 +21,6 @@ class XactionConsumer:
 
         # Go back to the readme.
 
-
     def handleMessages(self):
         for message in self.consumer:
             message = message.value
@@ -36,11 +34,11 @@ class XactionConsumer:
             else:
                 self.custBalances[message['custid']] -= message['amt']
             print(self.custBalances)
-
-            """
-            if self.custBalances[message['amt'] <= self.limit:
-                print(f'self.custBalances[message['custid']] + 'You are over the limit of -5000 in your balance!')"""
-
+        for k, v in self.custBalances.items():
+            if v <= self.limit:
+                print(f'Error: {k} Account has exceeded the limit of -5000 dollars!')
+            else:
+                print('Customer balance OK')
 
 if __name__ == "__main__":
     c = XactionConsumer()
