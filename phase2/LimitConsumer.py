@@ -34,11 +34,10 @@ class XactionConsumer:
             else:
                 self.custBalances[message['custid']] -= message['amt']
             print(self.custBalances)
-        for k, v in self.custBalances.items():
-            if v <= self.limit:
-                print(f'Error: {k} Account has exceeded the limit of -5000 dollars!')
-            else:
-                print('Customer balance OK')
+            for k, v in self.custBalances.items():
+                if v <= self.limit:
+                    print(f'Error: custid: {k} Account has exceeded the limit of -5000 dollars!')
+
 
 if __name__ == "__main__":
     c = XactionConsumer()
