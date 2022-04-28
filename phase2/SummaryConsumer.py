@@ -1,6 +1,7 @@
 from kafka import KafkaConsumer, TopicPartition
 from json import loads
 import numpy as np
+from statistics import pstdev
 
 
 class XactionConsumer:
@@ -33,16 +34,20 @@ class XactionConsumer:
                 self.custBalances[message['custid']] = 0
             if message['type'] == 'dep':
                 self.custBalances[message['custid']] += message['amt']
+                self.deposits.append(message['amt'])
             else:
                 self.custBalances[message['custid']] -= message['amt']
-            print(self.custBalances)
-            # Add all deposits together and withdrawals together.
-            if (message['amt']) >= 0:
-                self.deposits.append(message['amt'])
-            elif (message['amt']) <= 0:
                 self.withdrawals.append(message['amt'])
+            #print(self.custBalances)
+            # Add all deposits together and withdrawals together.
             print(f'The mean of all deposits is: ' + str(np.mean(self.deposits)))
             print(f'The mean of all withdrawals is: ' + str(np.mean(self.withdrawals)))
+            print(f'The standard deviation of all deposits is: ' + str(pstdev(self.deposits)))
+            if len(self.withdrawals) == 0:
+                print('No standard deviation for withdrawals')
+            else:
+                print(f'The standard deviation of all withdrawals is: ' + str(pstdev(self.withdrawals)))
+
 
 if __name__ == "__main__":
     c = XactionConsumer()
